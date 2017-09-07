@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.crazy.gy.MainActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.jaydenxiao.common.commonwidget.NormalTitleBar
+            android:id="@+id/ntb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></com.jaydenxiao.common.commonwidget.NormalTitleBar>
+
+        <com.aspsine.irecyclerview.IRecyclerView
+            android:id="@+id/irc"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/ntb"></com.aspsine.irecyclerview.IRecyclerView>
+
+        <!--<LinearLayout-->
+            <!--android:id="@+id/id_keyboard_vg"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="36dp"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:visibility="gone">-->
+
+            <!--<EditText-->
+                <!--android:layout_marginLeft="14dp"-->
+                <!--android:id="@+id/id_editext"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="7"-->
+                <!--android:textSize="14sp" />-->
+
+            <!--<ImageView-->
+                <!--android:id="@+id/id_fasong"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginRight="16dp"-->
+                <!--android:src="@mipmap/ic_launcher" />-->
+        <!--</LinearLayout>-->
+        <LinearLayout
+            android:id="@+id/id_keyboard_vg"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:layout_alignParentBottom="true"
+            android:background="#f6f6f6"
+            android:padding="3dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/id_editext"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_gray_border"
+                android:hint="说点什么吧..."
+                android:maxLines="4"
+                android:padding="8dp"
+                android:textSize="@dimen/font_normal" />
+
+            <ImageView
+                android:id="@+id/id_fasong"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:contentDescription="@null"
+                android:padding="12dp"
+                android:src="@drawable/fasong" />
+        </LinearLayout>
+    </RelativeLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>
