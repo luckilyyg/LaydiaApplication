@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerviewAdapt
         //监听recyclerview滑动
         setViewTreeObserver();
 
-        //上拉刷新
+        //下拉刷新
         irc.setOnRefreshListener(new com.aspsine.irecyclerview.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerviewAdapt
                 }, 500);
             }
         });
-
+//上拉加载
         irc.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(View loadMoreView) {
