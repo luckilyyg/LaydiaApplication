@@ -26,5 +26,7 @@ dependencies {
     compile project(':irecyclerview')
     compile 'com.ms-square:expandableTextView:0.1.4'//textview的扩展
     compile 'com.facebook.fresco:fresco:0.12.0'
+    compile project(':common')
+    compile 'com.github.Aspsine:SwipeToLoadLayout:1.0.3'
 
 }

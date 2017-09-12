@@ -35,6 +35,10 @@ public class CirContents {
         this.replys = replys;
     }
 
+    public CirContents() {
+
+    }
+
     public List<Favort> getGoodjobs() {
         return goodjobs;
     }

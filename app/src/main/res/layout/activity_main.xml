@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -18,37 +19,29 @@
             android:id="@+id/irc"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/ntb"></com.aspsine.irecyclerview.IRecyclerView>
+            android:layout_below="@+id/ntb"
+            app:loadMoreEnabled="true"
+            app:refreshEnabled="true"
+            app:refreshHeaderLayout="@layout/layout_irecyclerview_refresh_header">
+            <!--app:loadMoreEnabled="true"-->
+            <!--app:refreshEnabled="true"-->
+            <!--app:refreshHeaderLayout="@layout/layout_irecyclerview_refresh_header"-->
+        </com.aspsine.irecyclerview.IRecyclerView>
 
-        <!--<LinearLayout-->
-            <!--android:id="@+id/id_keyboard_vg"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="36dp"-->
-            <!--android:layout_alignParentBottom="true"-->
-            <!--android:visibility="gone">-->
+        <com.jaydenxiao.common.commonwidget.LoadingTip
+            android:id="@+id/loadedTip"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/id_keyboard_vg"
+            android:layout_centerInParent="true"
+            android:visibility="visible" />
 
-            <!--<EditText-->
-                <!--android:layout_marginLeft="14dp"-->
-                <!--android:id="@+id/id_editext"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_weight="7"-->
-                <!--android:textSize="14sp" />-->
-
-            <!--<ImageView-->
-                <!--android:id="@+id/id_fasong"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginRight="16dp"-->
-                <!--android:src="@mipmap/ic_launcher" />-->
-        <!--</LinearLayout>-->
         <LinearLayout
             android:id="@+id/id_keyboard_vg"
             android:layout_width="match_parent"
             android:layout_height="36dp"
             android:layout_alignParentBottom="true"
             android:background="#f6f6f6"
-            android:padding="3dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:visibility="gone">
@@ -76,6 +69,5 @@
                 android:src="@drawable/fasong" />
         </LinearLayout>
     </RelativeLayout>
-
 
 </android.support.design.widget.CoordinatorLayout>

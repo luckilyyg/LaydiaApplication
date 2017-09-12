@@ -3,6 +3,7 @@ package com.crazy.gy;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
@@ -14,16 +15,18 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.aspsine.irecyclerview.IRecyclerView;
-import com.aspsine.irecyclerview.animation.ScaleInAnimation;
+import com.aspsine.irecyclerview.OnLoadMoreListener;
+import com.aspsine.swipetoloadlayout.OnRefreshListener;
+import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.crazy.gy.adapter.RecyclerviewAdapter;
 import com.crazy.gy.bean.ContansData;
 import com.crazy.gy.util.CommentConfig;
 import com.crazy.gy.widget.CommentListView;
 import com.crazy.gy.widget.ZoneHeaderView;
-import com.jaydenxiao.common.baseapp.AppCache;
 import com.jaydenxiao.common.commonutils.DisplayUtil;
 import com.jaydenxiao.common.commonutils.KeyBordUtil;
 import com.jaydenxiao.common.commonutils.LogUtils;
+import com.jaydenxiao.common.commonwidget.LoadingTip;
 import com.jaydenxiao.common.commonwidget.NormalTitleBar;
 
 import butterknife.Bind;
@@ -42,6 +45,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerviewAdapt
     LinearLayout idKeyboardVg;
     @Bind(R.id.irc)
     IRecyclerView irc;
+    @Bind(R.id.loadedTip)
+    LoadingTip loadedTip;
+
+
     private RecyclerviewAdapter recyclerviewAdapter;
     private Context mContext;
     private LinearLayoutManager linearLayoutManager;
@@ -61,11 +68,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerviewAdapt
         mContext = MainActivity.this;
         ntb.setTitleText("动态列表");
 
+
         irc.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (idKeyboardVg.getVisibility() == View.VISIBLE) {
-                    updateEdittextBodyVisible(View.GONE,null);//滑动的时候 隐藏键盘
+                    updateEdittextBodyVisible(View.GONE, null);//滑动的时候 隐藏键盘
                 }
                 return false;
             }
@@ -78,11 +86,36 @@ public class MainActivity extends AppCompatActivity implements RecyclerviewAdapt
         recyclerviewAdapter.setKeyBoardOnClickListener(this);
         View view = View.inflate(mContext, R.layout.item_zone_header, null);
         irc.addHeaderView(view);
-        irc.setAdapter(recyclerviewAdapter);
 
+
+        irc.setAdapter(recyclerviewAdapter);
         //监听recyclerview滑动
         setViewTreeObserver();
 
+        //上拉刷新
+        irc.setOnRefreshListener(new com.aspsine.irecyclerview.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.e("刷新数据", "刷新");
+                    }
+                }, 500);
+            }
+        });
+
+        irc.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(View loadMoreView) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.e("加载数据", "加载");
+                    }
+                }, 500);
+            }
+        });
     }
 
     private void setViewTreeObserver() {
@@ -109,7 +142,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerviewAdapt
 
                 //偏移listview
                 if (irc != null && mCommentConfig != null) {
-                    int index = mCommentConfig.circlePosition + irc.getHeaderContainer().getChildCount() +1;
+                    int index = mCommentConfig.circlePosition + irc.getHeaderContainer().getChildCount() + 1;
+                    linearLayoutManager.scrollToPositionWithOffset(index, getListviewOffset(mCommentConfig));
+                } else if (irc != null && mCommentConfig == null) {
+                    int index = irc.getHeaderContainer().getChildCount() + 1 - DisplayUtil.dip2px(10);
                     linearLayoutManager.scrollToPositionWithOffset(index, getListviewOffset(mCommentConfig));
                 }
             }
@@ -124,8 +160,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerviewAdapt
         if (commentConfig.commentType == CommentConfig.Type.REPLY) {
             //回复评论的情况
             listviewOffset = listviewOffset + mSelectCommentItemOffset - ntb.getMeasuredHeight();
-        }else if (commentConfig.commentType == CommentConfig.Type.PUBLIC){
-            listviewOffset = listviewOffset  - ntb.getMeasuredHeight();
+        } else if (commentConfig.commentType == CommentConfig.Type.PUBLIC) {
+            listviewOffset = listviewOffset - ntb.getMeasuredHeight();
         }
         return listviewOffset;
     }
@@ -140,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerviewAdapt
     }
 
     private void updateEdittextBodyVisible(int visibility, CommentConfig commentConfig) {
+
         mCommentConfig = commentConfig;
         idKeyboardVg.setVisibility(visibility);//LinearLayout
         measureCircleItemHighAndCommentItemOffset(commentConfig);
@@ -159,7 +196,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerviewAdapt
     }
 
 
-
     private void measureCircleItemHighAndCommentItemOffset(CommentConfig commentConfig) {
         if (commentConfig == null)
             return;
@@ -175,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerviewAdapt
                 //回复评论的情况
                 CommentListView commentLv = (CommentListView) selectCircleItem.findViewById(R.id.commentList);
                 if (commentLv != null) {
-                     //找到要回复的评论view,计算出该view距离所属动态底部的距离
+                    //找到要回复的评论view,计算出该view距离所属动态底部的距离
                     View selectCommentItem = commentLv.getChildAt(commentConfig.commentPosition);
                     if (selectCommentItem != null) {
                         //选择的commentItem距选择的CircleItem底部的距离
@@ -200,9 +236,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerviewAdapt
     public void keyBoardOnClickListener(CommentConfig commentConfig) {
         //执行键盘弹出
         if (idKeyboardVg.getVisibility() == View.VISIBLE) {
-            updateEdittextBodyVisible(View.GONE,commentConfig);
+            updateEdittextBodyVisible(View.GONE, commentConfig);
         } else if (idKeyboardVg.getVisibility() == View.GONE) {
-            updateEdittextBodyVisible(View.VISIBLE,commentConfig);
+            updateEdittextBodyVisible(View.VISIBLE, commentConfig);
         }
     }
+
 }
