@@ -16,9 +16,11 @@ import android.widget.LinearLayout;
 
 import com.aspsine.irecyclerview.IRecyclerView;
 import com.aspsine.irecyclerview.OnLoadMoreListener;
+import com.aspsine.irecyclerview.widget.LoadMoreFooterView;
 import com.aspsine.swipetoloadlayout.OnRefreshListener;
 import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.crazy.gy.adapter.RecyclerviewAdapter;
+import com.crazy.gy.bean.CirContents;
 import com.crazy.gy.bean.ContansData;
 import com.crazy.gy.util.CommentConfig;
 import com.crazy.gy.widget.CommentListView;
@@ -28,6 +30,8 @@ import com.jaydenxiao.common.commonutils.KeyBordUtil;
 import com.jaydenxiao.common.commonutils.LogUtils;
 import com.jaydenxiao.common.commonwidget.LoadingTip;
 import com.jaydenxiao.common.commonwidget.NormalTitleBar;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -59,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerviewAdapt
     private int mCurrentKeyboardH;
     private int mSelectCircleItemH;
     private int mSelectCommentItemOffset;
+    private List<CirContents> mList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,8 +84,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerviewAdapt
             }
         });
 
-
-        recyclerviewAdapter = new RecyclerviewAdapter(mContext, ContansData.backDatas());
+        mList = ContansData.backDatas();
+        recyclerviewAdapter = new RecyclerviewAdapter(mContext,mList);
         linearLayoutManager = new LinearLayoutManager(this);
         irc.setLayoutManager(linearLayoutManager);
         recyclerviewAdapter.setKeyBoardOnClickListener(this);
@@ -91,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerviewAdapt
         irc.setAdapter(recyclerviewAdapter);
         //监听recyclerview滑动
         setViewTreeObserver();
-
         //下拉刷新
         irc.setOnRefreshListener(new com.aspsine.irecyclerview.OnRefreshListener() {
             @Override
@@ -99,18 +103,23 @@ public class MainActivity extends AppCompatActivity implements RecyclerviewAdapt
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        irc.setRefreshing(false);
                         Log.e("刷新数据", "刷新");
                     }
                 }, 500);
             }
         });
-//上拉加载
+        //上拉加载
         irc.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(View loadMoreView) {
+                irc.setLoadMoreStatus(LoadMoreFooterView.Status.LOADING);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        irc.setLoadMoreStatus(LoadMoreFooterView.Status.GONE);
+                        mList = ContansData.loadDatas();
+                        recyclerviewAdapter.notifyDataSetChanged();
                         Log.e("加载数据", "加载");
                     }
                 }, 500);
