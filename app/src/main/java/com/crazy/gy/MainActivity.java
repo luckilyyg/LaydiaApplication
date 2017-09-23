@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,9 +17,8 @@ import android.widget.LinearLayout;
 
 import com.aspsine.irecyclerview.IRecyclerView;
 import com.aspsine.irecyclerview.OnLoadMoreListener;
+import com.aspsine.irecyclerview.OnRefreshListener;
 import com.aspsine.irecyclerview.widget.LoadMoreFooterView;
-import com.aspsine.swipetoloadlayout.OnRefreshListener;
-import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.crazy.gy.adapter.RecyclerviewAdapter;
 import com.crazy.gy.bean.CirContents;
 import com.crazy.gy.bean.ContansData;
@@ -28,6 +28,7 @@ import com.crazy.gy.widget.ZoneHeaderView;
 import com.jaydenxiao.common.commonutils.DisplayUtil;
 import com.jaydenxiao.common.commonutils.KeyBordUtil;
 import com.jaydenxiao.common.commonutils.LogUtils;
+import com.jaydenxiao.common.commonutils.ToastUitl;
 import com.jaydenxiao.common.commonwidget.LoadingTip;
 import com.jaydenxiao.common.commonwidget.NormalTitleBar;
 
@@ -35,8 +36,9 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity implements RecyclerviewAdapter.IDialogKeyBoard {
+public class MainActivity extends AppCompatActivity implements RecyclerviewAdapter.IDialogKeyBoard, RecyclerviewAdapter.IRefreshData {
     //朋友圈头部
     ZoneHeaderView zoneHeaderView;
     @Bind(R.id.ntb)
@@ -85,10 +87,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerviewAdapt
         });
 
         mList = ContansData.backDatas();
-        recyclerviewAdapter = new RecyclerviewAdapter(mContext,mList);
+        recyclerviewAdapter = new RecyclerviewAdapter(mContext, mList);
         linearLayoutManager = new LinearLayoutManager(this);
         irc.setLayoutManager(linearLayoutManager);
         recyclerviewAdapter.setKeyBoardOnClickListener(this);
+        recyclerviewAdapter.setRefreshData(this);
         View view = View.inflate(mContext, R.layout.item_zone_header, null);
         irc.addHeaderView(view);
 
@@ -97,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerviewAdapt
         //监听recyclerview滑动
         setViewTreeObserver();
         //下拉刷新
-        irc.setOnRefreshListener(new com.aspsine.irecyclerview.OnRefreshListener() {
+        irc.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh() {
                 new Handler().postDelayed(new Runnable() {
@@ -118,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerviewAdapt
                     @Override
                     public void run() {
                         irc.setLoadMoreStatus(LoadMoreFooterView.Status.GONE);
-                        mList = ContansData.loadDatas();
+                        mList.addAll(ContansData.loadDatas());
                         recyclerviewAdapter.notifyDataSetChanged();
                         Log.e("加载数据", "加载");
                     }
@@ -251,4 +254,21 @@ public class MainActivity extends AppCompatActivity implements RecyclerviewAdapt
         }
     }
 
+    @Override
+    public void refreshDataOnClickListener() {
+        recyclerviewAdapter.notifyDataSetChanged();
+    }
+
+    @OnClick(R.id.id_fasong)
+    public void onClick() {
+        //发布评论
+        String content = idEditext.getText().toString().trim();
+        if (TextUtils.isEmpty(content)) {
+            ToastUitl.showToastWithImg("评论内容不能为空", R.drawable.ic_warm);
+            updateEdittextBodyVisible(View.GONE, null);
+        }
+        updateEdittextBodyVisible(View.GONE, null);
+
+
+    }
 }

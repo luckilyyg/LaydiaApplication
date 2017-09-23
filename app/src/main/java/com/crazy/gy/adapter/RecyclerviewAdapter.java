@@ -24,6 +24,7 @@ import com.crazy.gy.interfaces.ISpanClick;
 import com.crazy.gy.util.CircleMovementMethod;
 import com.crazy.gy.util.CommentConfig;
 import com.crazy.gy.util.NameClickable;
+import com.crazy.gy.util.ToastUtil;
 import com.crazy.gy.view.FavortListView;
 import com.crazy.gy.view.MyListView;
 import com.crazy.gy.widget.CommentListView;
@@ -103,7 +104,7 @@ public class RecyclerviewAdapter extends RecyclerView.Adapter {
                 myViewHolder.favortListView.setSpanClickListener(new ISpanClick() {
                     @Override
                     public void onClick(int position) {
-//                        ToastUtil.show(context, "----拿到userId，点击点赞人进行操作----" + position);
+                        ToastUtil.show(context, "----拿到userId，点击点赞人进行操作----" + position);
                     }
                 });
                 defineData(favortList, myViewHolder.favortListView);
@@ -161,8 +162,8 @@ public class RecyclerviewAdapter extends RecyclerView.Adapter {
                     favortList.clear();
                     favortList.add(new Favort("小丑", "666"));
                     defineData(favortList, myViewHolder.favortListView);
+                    mIRefreshData.refreshDataOnClickListener();
                 }
-                mIRefreshData.refreshDataOnClickListener();
 
             }
         });
